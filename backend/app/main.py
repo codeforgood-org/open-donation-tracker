@@ -1,11 +1,18 @@
 """Main FastAPI application"""
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api import auth, donations, organizations, campaigns, impact
+from app.api import auth, donations, organizations, campaigns, impact, admin, files, export
+
+# Rate limiter
+limiter = Limiter(key_func=get_remote_address)
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -20,6 +27,10 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
+# Add rate limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
@@ -29,12 +40,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files for uploads
+import os
+if os.path.exists("uploads"):
+    app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 # Include routers
 app.include_router(auth.router, prefix="/api")
 app.include_router(donations.router, prefix="/api")
 app.include_router(organizations.router, prefix="/api")
 app.include_router(campaigns.router, prefix="/api")
 app.include_router(impact.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
+app.include_router(files.router, prefix="/api")
+app.include_router(export.router, prefix="/api")
 
 
 @app.get("/")
