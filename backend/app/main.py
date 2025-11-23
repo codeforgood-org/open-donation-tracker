@@ -9,7 +9,7 @@ from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api import auth, donations, organizations, campaigns, impact, admin, files, export
+from app.api import auth, donations, organizations, campaigns, impact, admin, files, export, websocket, gamification, social, search, webhooks
 
 # Rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -54,6 +54,11 @@ app.include_router(impact.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 app.include_router(files.router, prefix="/api")
 app.include_router(export.router, prefix="/api")
+app.include_router(websocket.router)  # WebSocket endpoints (no prefix)
+app.include_router(gamification.router, prefix="/api")
+app.include_router(social.router, prefix="/api")
+app.include_router(search.router, prefix="/api")
+app.include_router(webhooks.router, prefix="/api")
 
 
 @app.get("/")

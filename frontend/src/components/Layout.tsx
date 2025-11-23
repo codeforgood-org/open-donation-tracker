@@ -1,6 +1,8 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Heart, LogOut, User, LayoutDashboard } from 'lucide-react';
+import { NotificationCenter } from './NotificationCenter';
+import { SearchBar } from './SearchBar';
 
 const Layout = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -42,12 +44,20 @@ const Layout = () => {
                 >
                   Impact
                 </Link>
+                <Link
+                  to="/leaderboard"
+                  className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium"
+                >
+                  Leaderboard
+                </Link>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
+              <SearchBar />
               {isAuthenticated ? (
                 <>
+                  <NotificationCenter />
                   <Link
                     to="/dashboard"
                     className="flex items-center space-x-1 text-gray-700 hover:text-primary-600"

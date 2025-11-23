@@ -14,6 +14,7 @@ import DonationsPage from '@/pages/DonationsPage';
 import ImpactPage from '@/pages/ImpactPage';
 import AdminDashboardPage from '@/pages/AdminDashboardPage';
 import ProfilePage from '@/pages/ProfilePage';
+import LeaderboardPage from '@/pages/LeaderboardPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,6 +58,7 @@ const App = () => {
               <Route path="campaigns" element={<CampaignsPage />} />
               <Route path="campaigns/:id" element={<CampaignDetailPage />} />
               <Route path="impact" element={<ImpactPage />} />
+              <Route path="leaderboard" element={<LeaderboardPage />} />
               <Route
                 path="dashboard"
                 element={
